@@ -18,7 +18,7 @@ document.addEventListener("DOMContentLoaded", () => {
   let usedLetters = [];
   let gameOver = false;
 
-  let wordHintPairs = []; // Array de pares palabra/pista
+  let wordHintPairs = [];
   let currentPairIndex = 0;
 
   addWordBtn.addEventListener("click", () => {
@@ -27,7 +27,6 @@ document.addEventListener("DOMContentLoaded", () => {
 
     let valid = true;
 
-    // Validar campos de palabra y pista
     if (!word) {
       wordError.classList.remove("hidden");
       valid = false;
@@ -42,12 +41,10 @@ document.addEventListener("DOMContentLoaded", () => {
       hintError.classList.add("hidden");
     }
 
-    if (!valid) return; // No agregar si hay errores
+    if (!valid) return;
 
-    // Agregar par palabra/pista a la lista
     wordHintPairs.push({ word, hint });
 
-    // Crear un elemento de lista para mostrarlo
     const listItem = document.createElement("div");
     listItem.classList.add("flex", "items-center", "justify-between", "bg-gray-700", "p-2", "rounded");
     listItem.innerHTML = `
@@ -61,14 +58,13 @@ document.addEventListener("DOMContentLoaded", () => {
 
     wordHintList.appendChild(listItem);
 
-    // Limpiar los campos para añadir otro par
     wordInput.value = "";
     hintInput.value = "";
   });
 
   function removeWordHint(index) {
     wordHintPairs.splice(index, 1);
-    wordHintList.innerHTML = ""; // Limpiar la lista
+    wordHintList.innerHTML = "";
     wordHintPairs.forEach((pair, i) => {
       const listItem = document.createElement("div");
       listItem.classList.add("flex", "items-center", "justify-between", "bg-gray-700", "p-2", "rounded");
@@ -79,14 +75,13 @@ document.addEventListener("DOMContentLoaded", () => {
       </button>
     `;
       const deleteButton = listItem.querySelector("button");
-      deleteButton.addEventListener("click", () => removeWordHint(i)); // Aquí agregamos el listener
+      deleteButton.addEventListener("click", () => removeWordHint(i));
       wordHintList.appendChild(listItem);
     });
   }
 
 
   startGameBtn.addEventListener("click", () => {
-    // Si no tienes pares de palabras, toma los valores de los inputs
     if (wordHintPairs.length === 0) {
       const word = wordInput.value.trim();
       const hint = hintInput.value.trim();
@@ -94,10 +89,9 @@ document.addEventListener("DOMContentLoaded", () => {
       if (!word || !hint) {
         wordError.classList.remove("hidden");
         hintError.classList.remove("hidden");
-        return; // No iniciar el juego si los inputs están vacíos
+        return;
       }
 
-      // Si hay valores, crea un par palabra/pista y agrégalo a wordHintPairs
       wordHintPairs.push({ word, hint });
     }
 
@@ -109,16 +103,14 @@ document.addEventListener("DOMContentLoaded", () => {
   resetBtn.addEventListener("click", () => {
     wordInput.value = "";
     hintInput.value = "";
-    location.reload(); // Reinicia todo
+    location.reload();
   });
 
   function initializeGame() {
-    // Asegúrate de usar el primer par (o el único par si es el caso)
     const currentPair = wordHintPairs[currentPairIndex] || { word: wordInput.value.trim(), hint: hintInput.value.trim() };
 
-    // Si no hay palabra o pista, no continuar
     if (!currentPair.word || !currentPair.hint) {
-      return; // Salir si no hay palabra ni pista
+      return;
     }
 
     secretWord = currentPair.word.toLowerCase();
@@ -176,7 +168,7 @@ document.addEventListener("DOMContentLoaded", () => {
   }
 
   function checkWin() {
-    if (!secretWord || secretWord.length === 0) return; // No chequear si no hay palabra
+    if (!secretWord || secretWord.length === 0) return;
 
     if (guessedLetters.join("") === secretWord) {
       endGame(true);
@@ -194,13 +186,13 @@ document.addEventListener("DOMContentLoaded", () => {
         currentPairIndex++;
         if (currentPairIndex < wordHintPairs.length) {
           setTimeout(() => {
-            initializeGame();  // Continuar con la siguiente palabra
+            initializeGame();
           }, 2000);
         } else {
           toast.textContent = "¡Has completado todas las palabras!";
           toast.classList.remove("hidden");
           setTimeout(() => {
-            location.reload(); // Reinicia todo después de que se muestre el mensaje
+            location.reload();
           }, 3000);
         }
       }, 1000);
@@ -219,7 +211,7 @@ document.addEventListener("DOMContentLoaded", () => {
     if (gameOver) return;
 
     const isTyping = document.activeElement === document.getElementById("fullGuessInput");
-    if (isTyping) return; // No marcar letras si estás escribiendo
+    if (isTyping) return;
 
     const letter = e.key.toLowerCase();
     if (/^[a-zñáéíóúü]$/i.test(letter)) {
@@ -227,7 +219,6 @@ document.addEventListener("DOMContentLoaded", () => {
     }
   });
 
-  // NUEVA FUNCIONALIDAD: Adivinar palabra desde el lateral
   const submitGuessBtn = document.getElementById("submitGuessBtn");
   const fullGuessInput = document.getElementById("fullGuessInput");
   const guessHistory = document.getElementById("guessHistory");
@@ -235,9 +226,8 @@ document.addEventListener("DOMContentLoaded", () => {
   submitGuessBtn.addEventListener("click", () => {
     if (gameOver) return;
     const userGuess = fullGuessInput.value.trim().toLowerCase();
-    if (!userGuess) return;  // Evita que se agregue vacío
+    if (!userGuess) return;
 
-    // Crear el elemento de intento
     const li = document.createElement("li");
     li.textContent = userGuess;
     guessHistory.appendChild(li);
@@ -247,7 +237,7 @@ document.addEventListener("DOMContentLoaded", () => {
       updateDisplay();
       endGame(true, true);
     } else {
-      fullGuessInput.value = "";  // Limpia el campo después del intento
+      fullGuessInput.value = "";
     }
   });
 
