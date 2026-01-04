@@ -4,7 +4,7 @@
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>Guess The Secret</title>
+  <title>Guess The Secret | Fabbeiru</title>
   <link href="style.css" rel="stylesheet">
   <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.3/css/all.min.css">
   <script defer src="script.js"></script>
@@ -13,44 +13,60 @@
 </head>
 
 <body class="bg-gray-900 text-white font-sans">
+
   <header
     class="w-full py-4 bg-gray-800 text-center text-2xl font-bold text-yellow-400 shadow-md flex justify-between items-center px-4">
     🧠 Guess The Secret
-    <button id="resetBtn" title="Volver a inicio" class="text-white hover:text-yellow-400 text-2xl"
+    <button 
+      id="resetBtn"
+      title="Volver a inicio"
+      class="text-white hover:text-yellow-400 text-2xl"
       aria-label="Reiniciar juego">
       🏠
     </button>
   </header>
 
   <div class="flex flex-col items-center justify-center min-h-screen p-4">
+
     <div id="setupModal" class="fixed inset-0 bg-black bg-opacity-80 flex items-center justify-center z-50">
       <div class="bg-gray-800 p-6 rounded-xl w-full max-w-md space-y-4">
         <h2 class="text-xl font-bold">Configurar Juego</h2>
+        
         <div>
-          <label class="block text-sm">Secreto:</label>
-          <input id="wordInput" type="text" class="w-full mt-1 p-2 rounded bg-gray-700 text-white" autocomplete="off" />
+          <label for="wordInput" class="block text-sm">Secreto:</label>
+          <input
+            id="wordInput"
+            type="text"
+            class="w-full mt-1 p-2 rounded bg-gray-700 text-white"
+            autocomplete="off" />
           <span id="wordError" class="text-red-500 text-xs hidden">Este campo es obligatorio.</span>
         </div>
+        
         <div>
-          <label class="block text-sm">Pista:</label>
-          <textarea id="hintInput" rows="2" class="w-full mt-1 p-2 rounded bg-gray-700 text-white"
+          <label for="hintInput" class="block text-sm">Pista:</label>
+          <textarea
+            id="hintInput"
+            rows="2"
+            class="w-full mt-1 p-2 rounded bg-gray-700 text-white"
             autocomplete="off"></textarea>
           <span id="hintError" class="text-red-500 text-xs hidden">Este campo es obligatorio.</span>
         </div>
 
         <div id="wordHintList" class="space-y-2"></div>
 
-        <button id="addWordBtn" class="w-full bg-gray-700 hover:bg-gray-600 py-2 px-4 rounded text-white"
-          aria-label="Añadir Secreto/Pista">Añadir
-          Secreto/Pista</button>
+        <button
+          id="addWordBtn"
+          class="w-full bg-gray-700 hover:bg-gray-600 py-2 px-4 rounded text-white"
+          aria-label="Añadir Secreto/Pista">Añadir Secreto/Pista</button>
 
-        <button id="startGameBtn" class="w-full bg-green-600 hover:bg-green-700 py-2 px-4 rounded text-white"
-          aria-label="Comenzar Juego">Comenzar
-          Juego</button>
+        <button
+          id="startGameBtn"
+          class="w-full bg-green-600 hover:bg-green-700 py-2 px-4 rounded text-white"
+          aria-label="Comenzar Juego">Comenzar Juego</button>
       </div>
     </div>
 
-    <div class="flex flex-col lg:flex-row items-start justify-center min-h-screen p-4 gap-12 hidden" id="gameArea">
+    <div id="gameArea" class="flex flex-col lg:flex-row items-start justify-center min-h-screen p-4 gap-12 hidden" id="gameArea">
       <div class="flex-[2] text-center space-y-6">
         <div class="text-2xl" id="hintDisplay"></div>
         <div id="wordDisplay" class="text-4xl tracking-widest"></div>
@@ -61,9 +77,14 @@
       <div id="sideGuessArea" class="flex-1 w-full max-w-md space-y-2 text-left">
         <label class="text-sm">¿Adivina la palabra/frase completa?</label>
         <div class="flex gap-2">
-          <input type="text" id="fullGuessInput"
-            class="flex-1 p-2 rounded bg-gray-800 text-white border border-gray-600" placeholder="Tu adivinanza..." />
-          <button id="submitGuessBtn" class="bg-yellow-600 hover:bg-yellow-700 px-4 rounded text-white"
+          <input
+            id="fullGuessInput"
+            type="text" 
+            class="flex-1 p-2 rounded bg-gray-800 text-white border border-gray-600"
+            placeholder="Tu adivinanza..." />
+          <button
+            id="submitGuessBtn"
+            class="bg-yellow-600 hover:bg-yellow-700 px-4 rounded text-white"
             aria-label="Probar">Probar</button>
         </div>
         <div class="mt-2 text-sm text-gray-300">
@@ -77,10 +98,7 @@
 
   <div id="toastMessage"
     class="fixed top-1/2 left-1/2 transform -translate-x-1/2 -translate-y-1/2 bg-green-600 text-white px-8 py-5 rounded-2xl shadow-2xl text-2xl opacity-0 transition-opacity duration-500 pointer-events-none z-50">
-    🎉 ¡Has adivinado la palabra!
-  </div>
-  <div id="toastMessage" class="toast hidden">
-    <p>¡Has completado todas las palabras!</p>
+    🎉 ¡Has adivinado la palabra! 🎉
   </div>
 
 </body>
