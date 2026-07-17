@@ -25,11 +25,11 @@
     </button>
   </header>
 
-  <div class="flex flex-col items-center justify-center min-h-screen p-4">
+  <main class="flex flex-col items-center justify-center min-h-screen p-4">
 
-    <div id="setupModal" class="fixed inset-0 bg-black bg-opacity-80 flex items-center justify-center z-50">
+    <div id="setupModal" role="dialog" aria-modal="true" aria-labelledby="setupModalTitle" class="fixed inset-0 bg-black bg-opacity-80 flex items-center justify-center z-50">
       <div class="bg-gray-800 p-6 rounded-xl w-full max-w-md space-y-4">
-        <h2 class="text-xl font-bold">Configurar Juego</h2>
+        <h2 id="setupModalTitle" class="text-xl font-bold">Configurar Juego</h2>
         
         <div>
           <label for="wordInput" class="block text-sm">Secreto:</label>
@@ -53,6 +53,16 @@
 
         <div id="wordHintList" class="space-y-2"></div>
 
+        <div class="flex items-center gap-2 pt-2 border-t border-gray-700">
+          <input
+            id="strictAccentsCheckbox"
+            type="checkbox"
+            class="w-4 h-4" />
+          <label for="strictAccentsCheckbox" class="text-sm">
+            Tratar tildes y "ñ" como letras distintas al adivinar
+          </label>
+        </div>
+
         <button
           id="addWordBtn"
           class="w-full bg-gray-700 hover:bg-gray-600 py-2 px-4 rounded text-white"
@@ -65,12 +75,12 @@
       </div>
     </div>
 
-    <div id="gameArea" class="flex flex-col lg:flex-row items-start justify-center min-h-screen p-4 gap-12 hidden" id="gameArea">
+    <div id="gameArea" class="flex flex-col lg:flex-row items-start justify-center min-h-screen p-4 gap-12 hidden">
       <div class="flex-[2] text-center space-y-6">
         <div class="text-2xl" id="hintDisplay"></div>
         <div id="wordDisplay" class="text-4xl tracking-widest"></div>
         <div id="usedLetters" class="mt-4 text-lg text-gray-400"></div>
-        <div id="letterButtons" class="grid grid-cols-9 gap-4 mt-8 justify-center"></div>
+        <div id="letterButtons" class="grid grid-cols-6 sm:grid-cols-9 gap-4 mt-8 justify-center"></div>
       </div>
 
       <div id="sideGuessArea" class="flex-1 w-full max-w-md space-y-2 text-left">
@@ -93,10 +103,10 @@
       </div>
     </div>
 
-  </div>
+  </main>
 
   <div id="toastMessage"
-    class="fixed top-1/2 left-1/2 transform -translate-x-1/2 -translate-y-1/2 bg-green-600 text-white px-8 py-5 rounded-2xl shadow-2xl text-2xl opacity-0 transition-opacity duration-500 pointer-events-none z-50">
+    class="fixed top-1/2 left-1/2 transform -translate-x-1/2 -translate-y-1/2 bg-green-600 text-white px-4 py-3 sm:px-8 sm:py-5 rounded-2xl shadow-2xl text-base sm:text-2xl text-center max-w-[85vw] sm:max-w-md opacity-0 transition-opacity duration-500 pointer-events-none z-50">
     🎉 ¡Has adivinado la palabra! 🎉
   </div>
 

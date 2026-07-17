@@ -34,6 +34,9 @@ input:focus, textarea:focus {
     justify-content: center;
     transition: opacity 0.5s ease-in-out;
 }
+#wordDisplay.fade-out {
+    opacity: 0;
+}
 
 #letterButtons button {
     min-width: 40px;
@@ -79,5 +82,9 @@ input:disabled {
 }
 
 #gameArea {
+    opacity: 0;
     transition: opacity 0.5s ease-in-out;
+}
+#gameArea.visible {
+    opacity: 1;
 }

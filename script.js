@@ -1,9 +1,11 @@
 document.addEventListener("DOMContentLoaded", () => {
+  const header = document.querySelector("header");
   const setupModal = document.getElementById("setupModal");
   const startGameBtn = document.getElementById("startGameBtn");
   const addWordBtn = document.getElementById("addWordBtn");
   const wordHintList = document.getElementById("wordHintList");
   const resetBtn = document.getElementById("resetBtn");
+  const strictAccentsCheckbox = document.getElementById("strictAccentsCheckbox");
 
   const wordInput = document.getElementById("wordInput");
   const hintInput = document.getElementById("hintInput");
@@ -26,28 +28,54 @@ document.addEventListener("DOMContentLoaded", () => {
     usedLetters: [],
     gameOver: false,
     currentPairIndex: 0,
+    strictAccents: false,
   };
 
   const wordHintPairs = [];
+  const SPECIAL_LETTERS = ["Ñ", "Á", "É", "Í", "Ó", "Ú", "Ü"];
+
+  function normalizeText(text) {
+    return text.normalize("NFD").replace(new RegExp("[\\u0300-\\u036f]", "g"), "");
+  }
+
+  function canonicalLetter(letter) {
+    return gameState.strictAccents ? letter : normalizeText(letter);
+  }
+
+  function setModalOpen(isOpen) {
+    if (isOpen) {
+      header.setAttribute("inert", "");
+      document.body.style.overflow = "hidden";
+    } else {
+      header.removeAttribute("inert");
+      document.body.style.overflow = "";
+    }
+  }
 
   function initializeGame() {
     const currentPair = wordHintPairs[gameState.currentPairIndex] || { word: wordInput.value.trim(), hint: hintInput.value.trim() };
 
     if (!currentPair.word || !currentPair.hint) return;
 
-    gameState.secretWord = currentPair.word.toLowerCase();
-    gameState.guessedLetters = [...gameState.secretWord].map(c => c === " " ? " " : "_");
-    gameState.usedLetters = [];
-    gameState.gameOver = false;
+    wordDisplay.classList.add("fade-out");
 
-    hintDisplay.innerHTML = "<strong>Pista:</strong> " + currentPair.hint;
-    renderLetters();
-    createLetterButtons();
+    setTimeout(() => {
+      gameState.secretWord = currentPair.word.toLowerCase();
+      gameState.guessedLetters = [...gameState.secretWord].map(c => c === " " ? " " : "_");
+      gameState.usedLetters = [];
+      gameState.gameOver = false;
 
-    fullGuessInput.disabled = false;
-    submitGuessBtn.disabled = false;
-    fullGuessInput.value = "";
-    guessHistory.innerHTML = "";
+      hintDisplay.innerHTML = "<strong>Pista:</strong> " + currentPair.hint;
+      renderLetters();
+      createLetterButtons();
+
+      fullGuessInput.disabled = false;
+      submitGuessBtn.disabled = false;
+      fullGuessInput.value = "";
+      guessHistory.innerHTML = "";
+
+      wordDisplay.classList.remove("fade-out");
+    }, 250);
   }
 
   addWordBtn.addEventListener("click", () => {
@@ -81,17 +109,18 @@ document.addEventListener("DOMContentLoaded", () => {
 
   function appendWordHintToList(word, hint, index) {
     const listItem = document.createElement("div");
-
     listItem.classList.add("flex", "items-center", "justify-between", "bg-gray-700", "p-2", "rounded");
-    listItem.innerHTML = `
-      <span>${word} - ${hint}</span>
-      <button class="delete-btn text-red-500 hover:text-red-600">
-        <i class="fa fa-trash-alt"></i>
-      </button>
-    `;
-    const deleteButton = listItem.querySelector(".delete-btn");
-    deleteButton.addEventListener("click", () => removeWordHint(wordHintPairs.length - 1));
 
+    const span = document.createElement("span");
+    span.textContent = `${word} - ${hint}`;
+
+    const deleteButton = document.createElement("button");
+    deleteButton.classList.add("delete-btn", "text-red-500", "hover:text-red-600");
+    deleteButton.innerHTML = `<i class="fa fa-trash-alt"></i>`;
+    deleteButton.addEventListener("click", () => removeWordHint(index));
+
+    listItem.appendChild(span);
+    listItem.appendChild(deleteButton);
     wordHintList.appendChild(listItem);
   }
 
@@ -127,9 +156,14 @@ document.addEventListener("DOMContentLoaded", () => {
       wordHintPairs.push({ word, hint });
     }
 
+    gameState.strictAccents = strictAccentsCheckbox.checked;
+
     setupModal.classList.add("hidden");
     gameArea.classList.remove("hidden");
+    setModalOpen(false);
     initializeGame();
+
+    requestAnimationFrame(() => requestAnimationFrame(() => gameArea.classList.add("visible")));
   });
 
   resetBtn.addEventListener("click", () => {
@@ -140,22 +174,31 @@ document.addEventListener("DOMContentLoaded", () => {
 
   function createLetterButtons() {
     letterButtons.innerHTML = "";
+
     for (let i = 65; i <= 90; i++) {
-      const char = String.fromCharCode(i);
-      const btn = document.createElement("button");
-      btn.textContent = char;
-      btn.id = `btn-${char}`;
-      btn.className = "bg-gray-700 hover:bg-gray-600 py-3 text-lg rounded text-white";
-      btn.addEventListener("click", () => handleGuess(char.toLowerCase()));
-      letterButtons.appendChild(btn);
+      addLetterButton(String.fromCharCode(i));
     }
+
+    if (gameState.strictAccents) {
+      SPECIAL_LETTERS.forEach(char => addLetterButton(char));
+    }
+  }
+
+  function addLetterButton(char) {
+    const btn = document.createElement("button");
+    btn.textContent = char;
+    btn.id = `btn-${char}`;
+    btn.className = "bg-gray-700 hover:bg-gray-600 py-3 text-lg rounded text-white";
+    btn.addEventListener("click", () => handleGuess(char.toLowerCase()));
+    letterButtons.appendChild(btn);
   }
 
   function handleGuess(letter) {
     if (!gameState.secretWord) return;
 
-    guessLetter(letter);
-    disableLetterButton(letter);
+    const canonical = canonicalLetter(letter);
+    guessLetter(canonical);
+    disableLetterButton(canonical);
     renderLetters();
 
     if (hasWon()) endGame(true);
@@ -167,7 +210,7 @@ document.addEventListener("DOMContentLoaded", () => {
     gameState.usedLetters.push(letter);
 
     [...gameState.secretWord].forEach((char, i) => {
-      if (char === letter) gameState.guessedLetters[i] = letter;
+      if (canonicalLetter(char) === letter) gameState.guessedLetters[i] = char;
     });
 
     return true;
@@ -176,7 +219,7 @@ document.addEventListener("DOMContentLoaded", () => {
   function guessWord(word) {
     if (gameState.gameOver) return false;
 
-    if (word.toLowerCase() === gameState.secretWord) {
+    if (canonicalLetter(word.toLowerCase()) === canonicalLetter(gameState.secretWord)) {
       gameState.guessedLetters = [...gameState.secretWord];
       return true;
     }
@@ -270,6 +313,7 @@ document.addEventListener("DOMContentLoaded", () => {
     if (e.key === "Enter") submitGuessBtn.click();
   });
 
+  setModalOpen(true);
   wordInput.focus();
 
 });
