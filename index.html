@@ -5,6 +5,10 @@
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   <title>Guess The Secret | Fabbeiru</title>
+  <link rel="icon" type="image/svg+xml" href="favicon.svg">
+  <link rel="icon" type="image/png" sizes="32x32" href="favicon-32.png">
+  <link rel="icon" type="image/png" sizes="16x16" href="favicon-16.png">
+  <link rel="apple-touch-icon" href="apple-touch-icon.png">
   <link href="style.css" rel="stylesheet">
   <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.3/css/all.min.css">
   <script defer src="script.js"></script>
@@ -12,20 +16,24 @@
     content="Adivina la palabra secreta en este divertido juego de adivinanzas. ¡Diviértete y pon a prueba tus habilidades!">
 </head>
 
-<body class="bg-gray-900 text-white font-sans">
+<body class="bg-gray-900 text-white font-sans min-h-screen flex flex-col">
 
   <header
-    class="w-full py-4 bg-gray-800 text-center text-2xl font-bold shadow-md flex justify-between items-center px-4">
-    🧠 Guess The Secret
-    <button 
+    class="w-full py-4 bg-gray-800 text-center text-2xl font-bold shadow-md flex justify-between items-center px-6 sm:px-10">
+    <span class="flex items-center gap-2">
+      <img src="favicon.svg" alt="" width="40" height="40" class="rounded">
+      Guess The Secret
+    </span>
+    <button
       id="resetBtn"
       title="Volver a inicio"
-      aria-label="Reiniciar juego">
-      🏠
+      aria-label="Reiniciar juego"
+      class="text-xl leading-none">
+      <i class="fa fa-redo"></i>
     </button>
   </header>
 
-  <main class="flex flex-col items-center justify-center min-h-screen p-4">
+  <main class="flex flex-col items-center justify-center flex-1 p-4">
 
     <div id="setupModal" role="dialog" aria-modal="true" aria-labelledby="setupModalTitle" class="fixed inset-0 bg-black bg-opacity-80 flex items-center justify-center z-50">
       <div class="bg-gray-800 p-6 rounded-xl w-full max-w-md space-y-4">
@@ -75,7 +83,7 @@
       </div>
     </div>
 
-    <div id="gameArea" class="flex flex-col lg:flex-row items-start justify-center min-h-screen p-4 gap-12 hidden">
+    <div id="gameArea" class="flex flex-col lg:flex-row items-start justify-center p-4 gap-12 hidden">
       <div class="flex-[2] text-center space-y-6">
         <div class="text-2xl" id="hintDisplay"></div>
         <div id="wordDisplay" class="text-4xl tracking-widest"></div>
@@ -104,6 +112,12 @@
     </div>
 
   </main>
+
+  <footer class="flex items-center justify-center gap-2 py-3 bg-gray-800 border-t border-gray-700 text-xs text-gray-400">
+    <span>© <span id="footerYear"></span> Fabián Beirutti</span>
+    <img src="myLogo.png" alt="Logo de Fabián Beirutti" width="16" height="16" class="rounded">
+  </footer>
+  <script>document.getElementById('footerYear').textContent = new Date().getFullYear();</script>
 
   <div id="toastMessage"
     class="fixed top-1/2 left-1/2 transform -translate-x-1/2 -translate-y-1/2 bg-green-600 text-white px-4 py-3 sm:px-8 sm:py-5 rounded-2xl shadow-2xl text-base sm:text-2xl text-center max-w-[85vw] sm:max-w-md opacity-0 transition-opacity duration-500 pointer-events-none z-50">
